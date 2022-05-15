@@ -10,13 +10,14 @@ class NewNote extends StatefulWidget {
   final title;
   final note;
   final color;
-  final id;
+  final id, isNew;
   NewNote({
     Key? key,
     this.title,
     this.note,
     this.color,
     this.id,
+    required this.isNew,
   }) : super(key: key);
 
   @override
@@ -30,15 +31,35 @@ class _NewNoteState extends State<NewNote> {
   TextEditingController note = TextEditingController();
   SqlDb db = SqlDb();
   String color = "FF0000FF";
+  var id, isNew;
+
+  @override
+  void initState() {
+    title.text = widget.title;
+    note.text = widget.note;
+    id = widget.id;
+    color = widget.color;
+    isNew = widget.isNew;
+    super.initState();
+  }
 
   String _getDataToSaveInDatabase() {
     return "INSERT INTO 'notes' (title, note, color)VALUES ('${title.text}' , '${note.text}' , '$color') ";
+  }
+
+  String _getDataToUpdateInDatabase() {
+    return "UPDATE 'notes' SET title ='${title.text}', note = '${title.text}', color = '$color' WHERE id = '${this.id}'  ";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(
+            TagColors().getColorAsARGB(color)[0],
+            TagColors().getColorAsARGB(color)[1],
+            TagColors().getColorAsARGB(color)[2],
+            TagColors().getColorAsARGB(color)[3]),
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
@@ -49,10 +70,11 @@ class _NewNoteState extends State<NewNote> {
                   context: context,
                   builder: (context) {
                     return CustomBottomSheet(
-                      isNew: true,
+                      isNew: isNew,
                       title: title.text,
                       note: note.text,
                       color: color,
+                      id: id != null ? id : "",
                       //this parameter is a function used to translate data bettwen  the tow classes
                       onChose: (String newColor) {
                         setState(() {
@@ -67,7 +89,9 @@ class _NewNoteState extends State<NewNote> {
             icon: Icon(Icons.done),
             onPressed: () async {
               //use on press over save icon to send date to database and , go to main screen
-              int result = await db.insertData(_getDataToSaveInDatabase());
+              isNew
+                  ? await db.insertData(_getDataToSaveInDatabase())
+                  : await db.updateData(_getDataToUpdateInDatabase());
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => MyHomePage()),

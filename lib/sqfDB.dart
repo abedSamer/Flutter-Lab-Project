@@ -40,24 +40,32 @@ class SqlDb {
   readData(String sql) async {
     Database? mydb = await db;
     List<Map> response = await mydb!.rawQuery(sql);
+    print("================== Readed ==================");
+
     return response;
   }
 
   insertData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawInsert(sql);
+    print("================== Insert ==================");
+
     return response;
   }
 
   updateData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawUpdate(sql);
+    print("================== Update ==================");
+
     return response;
   }
 
   deleteData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
+    print("================== Deleted ==================");
+
     return response;
   }
 
