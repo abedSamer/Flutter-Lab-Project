@@ -17,24 +17,6 @@ class _MyHomePageState extends State<MyHomePage> {
   var numOfNotes = 0;
   SqlDb db = SqlDb();
 
-  _getNumOfNotes() {
-    var i;
-    _getNotes().then(((value) {
-      print(" numOfNotes 23 =>  :  $numOfNotes ==================");
-
-      if (value.length == 0) {
-        i = false;
-      } else {
-        i = true;
-      }
-    }));
-    print("Before Sleep 29 => : ");
-    sleep(Duration(seconds: 10));
-    print("After Sleep 31 => : ");
-    print(" numOfNotes 32 =>  :  $numOfNotes ==================");
-    return numOfNotes == 0 ? true : false;
-  }
-
   Future<List<Map>> _getNotes() async {
     List<Map> result = await db.readData("SELECT * FROM notes");
     numOfNotes = result.length;
@@ -45,30 +27,32 @@ class _MyHomePageState extends State<MyHomePage> {
     print(" 41 ============== No Notes ================= ");
     print("numOfNotes from No Notes : " + numOfNotes.toString());
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset("assets/imgs/Empty1.jpeg"),
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: Text(
-              "No Notes :(",
-              style: TextStyle(
-                  color: Colors.purple[900],
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text("You have no task to do .",
+      child: Container(
+        height: MediaQuery.of(context).size.height - 120,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/imgs/Empty1.jpeg"),
+            Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Text(
+                "No Notes :(",
                 style: TextStyle(
-                  color: Colors.blueGrey[300],
-                  fontSize: 16,
-                )),
-          ),
-        ],
+                    color: Colors.purple[900],
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text("You have no task to do .",
+                  style: TextStyle(
+                    color: Colors.blueGrey[300],
+                    fontSize: 16,
+                  )),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -155,32 +139,36 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Padding(
             padding: const EdgeInsets.only(left: 15, top: 25, right: 15),
-            child: _getNumOfNotes()
-                ? noNotes()
-                : SingleChildScrollView(
-                    child: FutureBuilder(
-                      //her we get the notes from local storage 'sqfLite'
-                      future: _getNotes(),
-                      builder: ((context, AsyncSnapshot<List<Map>> snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              //her the system check if we have no notes, the image and text about no notes will display , else system display notes
-                              return displayNotes(
-                                  snapshot.data![index]['title'].toString(),
-                                  snapshot.data![index]['note'].toString(),
-                                  snapshot.data![index]['color'].toString(),
-                                  snapshot.data![index]['id']);
-                            },
-                          );
-                        }
-                        return Center(child: CircularProgressIndicator());
-                      }),
-                    ),
-                  )),
+            child: SingleChildScrollView(
+              child: FutureBuilder(
+                //her we get the notes from local storage 'sqfLite'
+                future: _getNotes(),
+                builder: ((context, AsyncSnapshot<List<Map>> snapshot) {
+                  if (snapshot.hasData && snapshot.data!.length != 0) {
+                    print(" =============== Notes  Founded 145 => =========" +
+                        snapshot.data!.length.toString());
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        //her the system check if we have no notes, the image and text about no notes will display , else system display notes
+                        return displayNotes(
+                            snapshot.data![index]['title'].toString(),
+                            snapshot.data![index]['note'].toString(),
+                            snapshot.data![index]['color'].toString(),
+                            snapshot.data![index]['id']);
+                      },
+                    );
+                  } else if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.data!.isEmpty) {
+                    return noNotes();
+                  }
+                  return Center(child: CircularProgressIndicator());
+                }),
+              ),
+            )),
         floatingActionButton: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 primary: Colors.transparent, shadowColor: Colors.transparent),
