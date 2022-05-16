@@ -145,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     //her the system check if we have no notes, the image and text about no notes will display , else system display notes
+
                     return displayNotes(
                         snapshot.data![index]['title'].toString(),
                         snapshot.data![index]['note'].toString(),

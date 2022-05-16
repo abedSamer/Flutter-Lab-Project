@@ -60,11 +60,11 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
   }
 
   void _setColorAsSelected(index) {
-    setState(() {
-      for (int i = 0; i < selectedColor.length; i++) {
-        (i == index) ? selectedColor[i] = true : selectedColor[i] = false;
-      }
-    });
+    // setState(() {
+    for (int i = 0; i < selectedColor.length; i++) {
+      (i == index) ? selectedColor[i] = true : selectedColor[i] = false;
+    }
+    // });
   }
 
   _deleteNoteAndGoBack() {
@@ -168,33 +168,37 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                         scrollDirection: Axis.horizontal,
                         itemCount: TagColors().colors.length,
                         itemBuilder: (context, index) {
+                          if (color == TagColors().getColorFromList(index)) {
+                            _setColorAsSelected(index);
+                          }
                           return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            child: GestureDetector(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
                               child: GestureDetector(
+                                  child: GestureDetector(
                                 onTap: () {
-                                  _setColorAsSelected(index);
-                                  color = TagColors()
-                                      .colors
-                                      .elementAt(index)
-                                      .toString()
-                                      .split("Color(0x")[1]
-                                      .split(")")[0];
+                                  setState(() {
+                                    _setColorAsSelected(index);
+                                  });
+                                  color = TagColors().getColorFromList(index);
                                   widget.onChose(color);
                                 },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Container(
-                                    width: 60,
-                                    child: selectedColor[index]
-                                        ? Icon(Icons.done)
-                                        : Text(""),
-                                    color: TagColors().colors.elementAt(index),
-                                  ),
+                                child: FloatingActionButton(
+                                  elevation: 10,
+                                  mini: true,
+                                  onPressed: () {
+                                    setState(() {
+                                      _setColorAsSelected(index);
+                                    });
+                                    color = TagColors().getColorFromList(index);
+                                    widget.onChose(color);
+                                  },
+                                  child: selectedColor[index]
+                                      ? Icon(Icons.done)
+                                      : Text(""),
+                                  backgroundColor:
+                                      TagColors().colors.elementAt(index),
                                 ),
-                              ),
-                            ),
-                          );
+                              )));
                         },
                       )),
                 )

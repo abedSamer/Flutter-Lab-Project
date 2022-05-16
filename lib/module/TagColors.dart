@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TagColors {
-  // var selectedColor = Color(0xFF2196F3);
+  String getColorFromList(int index) {
+    String _tremedColor =
+        colors[index].toString().split("Color(0x")[1].split(")")[0];
+    print("trem : " + _tremedColor);
+    return _tremedColor;
+  }
 
   List<int> getColorAsARGB(String color) {
     //color ex. : FF 11 22 33
@@ -18,24 +23,6 @@ class TagColors {
       int.parse('$B', radix: 16)
     ];
   }
-
-  Map<String, Color> colors1 = {
-    'red': Color(0xFFF44336),
-    'green': Color(0xFF4CAF50),
-    'blue': Color(0xFF2196F3),
-    'white': Color(0xFFFFFFFF),
-    'yellow': Color(0xFFFFFF00),
-    'lightBlue': Color(0xFF03A9F4),
-    'myBlue': Color(0x1321E0),
-    'lightPink': Color(0xFFF28B81),
-    'lightYellow': Color(0xFFFBF476),
-    'lightGreen': Color(0xFFCDFF90),
-    'turquoise': Color(0xFFA7FEEB),
-    'lightCyan': Color(0xFFCBF0F8),
-    'plum': Color(0xFFD7AEFC),
-    'lightBrown': Color(0xFFE6C9A9),
-    'lightGray': Color(0xFFE9EAEE),
-  };
 
   List<Color> colors = [
     Color(0xFFF44336),
