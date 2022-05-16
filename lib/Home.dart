@@ -1,8 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:lap_project/edit_note.dart';
 import 'package:lap_project/module/TagColors.dart';
 import 'package:lap_project/new_note.dart';
 import 'package:lap_project/sqfDB.dart';
@@ -24,8 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget noNotes() {
-    print(" 41 ============== No Notes ================= ");
-    print("numOfNotes from No Notes : " + numOfNotes.toString());
     return Center(
       child: Container(
         height: MediaQuery.of(context).size.height - 120,
@@ -138,37 +134,31 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text("Note App "),
         ),
         body: Padding(
-            padding: const EdgeInsets.only(left: 15, top: 25, right: 15),
-            child: SingleChildScrollView(
-              child: FutureBuilder(
-                //her we get the notes from local storage 'sqfLite'
-                future: _getNotes(),
-                builder: ((context, AsyncSnapshot<List<Map>> snapshot) {
-                  if (snapshot.hasData && snapshot.data!.length != 0) {
-                    print(" =============== Notes  Founded 145 => =========" +
-                        snapshot.data!.length.toString());
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        //her the system check if we have no notes, the image and text about no notes will display , else system display notes
-                        return displayNotes(
-                            snapshot.data![index]['title'].toString(),
-                            snapshot.data![index]['note'].toString(),
-                            snapshot.data![index]['color'].toString(),
-                            snapshot.data![index]['id']);
-                      },
-                    );
-                  } else if (snapshot.data == null) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.data!.isEmpty) {
-                    return noNotes();
-                  }
-                  return Center(child: CircularProgressIndicator());
-                }),
-              ),
-            )),
+          padding: const EdgeInsets.only(left: 15, top: 25, right: 15),
+          child: FutureBuilder(
+            //her we get the notes from local storage 'sqfLite'
+            future: _getNotes(),
+            builder: ((context, AsyncSnapshot<List<Map>> snapshot) {
+              if (snapshot.hasData && snapshot.data!.length != 0) {
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    //her the system check if we have no notes, the image and text about no notes will display , else system display notes
+                    return displayNotes(
+                        snapshot.data![index]['title'].toString(),
+                        snapshot.data![index]['note'].toString(),
+                        snapshot.data![index]['color'].toString(),
+                        snapshot.data![index]['id']);
+                  },
+                );
+              } else if (snapshot.data != null && snapshot.data!.isEmpty) {
+                return noNotes();
+              }
+              return Center(child: CircularProgressIndicator());
+            }),
+          ),
+        ),
         floatingActionButton: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 primary: Colors.transparent, shadowColor: Colors.transparent),

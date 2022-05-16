@@ -68,7 +68,6 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
   }
 
   _deleteNoteAndGoBack() {
-    print(id);
     SqlDb().deleteData("DELETE FROM notes WHERE id='$id';");
     Navigator.pushAndRemoveUntil(
         context,
@@ -120,7 +119,6 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                       backgroundColor:
                           MaterialStateProperty.all(Colors.transparent)),
                   onPressed: () {
-                    print(this.isNew);
                     (this.isNew)
                         ? Navigator.pushAndRemoveUntil(
                             context,

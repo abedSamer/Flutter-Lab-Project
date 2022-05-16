@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lap_project/Home.dart';
-import 'package:lap_project/main.dart';
 import 'package:lap_project/module/TagColors.dart';
 import 'package:lap_project/module/bottom_sheet.dart';
 import 'package:lap_project/sqfDB.dart';
@@ -31,8 +30,7 @@ class _NewNoteState extends State<NewNote> {
   TextEditingController note = TextEditingController();
   SqlDb db = SqlDb();
   String color = "FF0000FF";
-  var id, isNew;
-
+  var id, isNew, _titleColor;
   @override
   void initState() {
     title.text = widget.title;
@@ -40,7 +38,14 @@ class _NewNoteState extends State<NewNote> {
     id = widget.id;
     color = widget.color;
     isNew = widget.isNew;
+    _titleColor = Colors.indigo;
     super.initState();
+  }
+
+  _emptyTitleAlirt() {
+    setState(() {
+      _titleColor = Colors.red;
+    });
   }
 
   String _getDataToSaveInDatabase() {
@@ -89,13 +94,17 @@ class _NewNoteState extends State<NewNote> {
             icon: Icon(Icons.done),
             onPressed: () async {
               //use on press over save icon to send date to database and , go to main screen
-              isNew
-                  ? await db.insertData(_getDataToSaveInDatabase())
-                  : await db.updateData(_getDataToUpdateInDatabase());
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()),
-                  (route) => false);
+              if (title.text != "") {
+                isNew
+                    ? await db.insertData(_getDataToSaveInDatabase())
+                    : await db.updateData(_getDataToUpdateInDatabase());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                    (route) => false);
+              } else {
+                _emptyTitleAlirt();
+              }
             },
           )
         ],
@@ -114,19 +123,20 @@ class _NewNoteState extends State<NewNote> {
               ),
             ),
             TextField(
+              restorationId: "titleField",
               controller: title,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                   hintText: "   Type Something ....",
                   hintStyle: TextStyle(
-                      color: Colors.indigo,
+                      color: _titleColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w600)),
             ),
             Expanded(
               child: TextField(
                 controller: note,
-                //put maxLines to null to remove lemetation about write description
+                //put maxLines to null to remove Limitation about write description
                 maxLines: null,
                 //change keyboard type to make in integrated with his purpose;
                 keyboardType: TextInputType.multiline,
