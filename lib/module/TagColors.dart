@@ -4,7 +4,6 @@ class TagColors {
   String getColorFromList(int index) {
     String _tremedColor =
         colors[index].toString().split("Color(0x")[1].split(")")[0];
-    print("trem : " + _tremedColor);
     return _tremedColor;
   }
 

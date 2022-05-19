@@ -28,9 +28,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
   List selectedColor =
       List.generate(TagColors().colors.length, (index) => false);
 
-  var isNew, id, title, note;
-
-  var color;
+  var isNew, id, title, note, color, textColor = Colors.white;
   @override
   void initState() {
     isNew = widget.isNew;
@@ -103,10 +101,13 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                   onPressed: () {},
                   child: Row(
                     children: [
-                      Icon(Icons.share),
+                      Icon(Icons.share, color: textColor),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
-                        child: Text("Share with your frinds"),
+                        child: Text(
+                          "Share with your frinds",
+                          style: TextStyle(color: textColor),
+                        ),
                       )
                     ],
                   )),
@@ -129,10 +130,11 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.delete),
+                      Icon(Icons.delete, color: textColor),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
-                        child: Text("Delete"),
+                        child:
+                            Text("Delete", style: TextStyle(color: textColor)),
                       )
                     ],
                   )),
@@ -149,10 +151,11 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.copy),
+                      Icon(Icons.copy, color: textColor),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
-                        child: Text("Duplicate"),
+                        child: Text("Duplicate",
+                            style: TextStyle(color: textColor)),
                       )
                     ],
                   )),

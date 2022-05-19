@@ -1,5 +1,4 @@
 // import 'package:flutter/cupertino.dart';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lap_project/module/TagColors.dart';
 import 'package:lap_project/new_note.dart';
@@ -62,18 +61,18 @@ class _MyHomePageState extends State<MyHomePage> {
     int G = RGB[2];
     int B = RGB[3];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: Card(
+    return Card(
+      child: ClipPath(
+        clipper: ShapeBorderClipper(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  left: BorderSide(
+                      color: Color.fromARGB(255, R, G, B), width: 6))),
           child: Row(
             children: [
-              Container(
-                color: Color.fromARGB(255, R, G, B),
-                width: 5,
-                height: 100,
-              ),
               TextButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.transparent,
@@ -142,15 +141,54 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.hasData && snapshot.data!.length != 0) {
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
-                  shrinkWrap: true,
                   itemBuilder: (context, index) {
                     //her the system check if we have no notes, the image and text about no notes will display , else system display notes
 
-                    return displayNotes(
-                        snapshot.data![index]['title'].toString(),
-                        snapshot.data![index]['note'].toString(),
-                        snapshot.data![index]['color'].toString(),
-                        snapshot.data![index]['id']);
+                    return Dismissible(
+                        key: ObjectKey(snapshot.data![index]),
+                        background: ClipPath(
+                            clipper: ShapeBorderClipper(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8))),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              color: Colors.red,
+                              child: Icon(Icons.delete, color: Colors.white),
+                            )),
+                        // secondaryBackground: ClipPath(
+                        //     clipper: ShapeBorderClipper(
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(8))),
+                        //     child: Container(
+                        //       alignment: Alignment.centerRight,
+                        //       color: Colors.green,
+                        //       child: Icon(Icons.copy, color: Colors.white),
+                        //     )),
+                        onDismissed: (direction) {
+                          var itemTitle = snapshot.data![index]['title'];
+                          var itemID = snapshot.data![index]['id'];
+                          var itemColor = snapshot.data![index]['color'];
+                          var itemNote = snapshot.data![index]['note'];
+                          // if (direction == DismissDirection.startToEnd) {
+                          SqlDb().deleteData(
+                              "DELETE FROM notes WHERE id='$itemID';");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${itemTitle} Deleted')));
+                          // } else if (direction == DismissDirection.endToStart) {
+                          //   setState(() {
+                          //     snapshot.data!.add(snapshot.data![index]);
+                          //   });
+                          //   SqlDb().insertData(
+                          //       "INSERT INTO 'notes' (title, note, color)VALUES ('${itemTitle}' , '${itemNote}' , '$itemColor') ");
+                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          //       content: Text('${itemTitle} Duoblecated')));
+                          // }
+                        },
+                        child: displayNotes(
+                            snapshot.data![index]['title'].toString(),
+                            snapshot.data![index]['note'].toString(),
+                            snapshot.data![index]['color'].toString(),
+                            snapshot.data![index]['id']));
                   },
                 );
               } else if (snapshot.data != null && snapshot.data!.isEmpty) {
