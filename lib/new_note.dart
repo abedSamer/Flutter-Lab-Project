@@ -53,7 +53,7 @@ class _NewNoteState extends State<NewNote> {
   }
 
   String _getDataToUpdateInDatabase() {
-    return "UPDATE 'notes' SET title ='${title.text}', note = '${title.text}', color = '$color' WHERE id = '${this.id}'  ";
+    return "UPDATE 'notes' SET title ='${title.text}', note = '${note.text}', color = '$color' WHERE id = '${this.id}'  ";
   }
 
   @override
